@@ -1,0 +1,29 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "resouces/fonts/CaveatBrush-Regular.ttf",
+      "sha1": "a03e2809432bf3a5aaa49e05a90b85325ed1c022"
+    },
+    {
+      "path": "resouces/fonts/Dosis-Bold.ttf",
+      "sha1": "3fae80a73da8e4fae927d964bc47e99bebc63c99"
+    },
+    {
+      "path": "resouces/fonts/Dosis-SemiBold.ttf",
+      "sha1": "97a1ecc96a925a93c57ca3bab64bc964bad78ea0"
+    },
+    {
+      "path": "resouces/fonts/KaushanScript-Regular.ttf",
+      "sha1": "8b203c70f9c8f5d437eb5a87a6c7df39fb2996b7"
+    },
+    {
+      "path": "resouces/fonts/Matemasie-Regular.ttf",
+      "sha1": "93e6850e547d573281adc597282b7238321213f5"
+    },
+    {
+      "path": "resouces/fonts/PermanentMarker-Regular.ttf",
+      "sha1": "bc40bfbc7eb7715af82b136429848a3c7a83a2b3"
+    }
+  ]
+}
