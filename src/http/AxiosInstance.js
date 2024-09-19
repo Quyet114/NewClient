@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AxiosInstance = (contentType = 'application/json') => {
     const axiosInstance = axios.create({
-        baseURL: 'http://192.168.137.1:8080/'
+        baseURL: 'https://api-network-emdi.onrender.com/'
     });
 
     axiosInstance.interceptors.request.use(

@@ -58,7 +58,7 @@ export const upLoadMusic = async (form) => {
     const token = await getToken('token');
     try {
         const axiosInstance = axios.create({
-            baseURL: 'http://192.168.1.14:8080/',
+            baseURL: 'https://api-network-emdi.onrender.com/',
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${token}`,

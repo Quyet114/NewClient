@@ -23,11 +23,11 @@ const AddNewShort = ({ route }) => {
     const [video, setVideo] = useState(null);
     const [videoPath, setVideoPath] = useState(null);
     const [image, setImage] = useState([]);
-    const [imagePath, setImagePath] = useState(["https://res.cloudinary.com/dyjxyz2jc/image/upload/v1723992188/demo1/cvfhe7rzf6p4r16mpmgl.jpg",
-        "https://res.cloudinary.com/dyjxyz2jc/image/upload/v1723992189/demo1/gjwny8slonmhhgombfti.jpg",
-        "https://res.cloudinary.com/dyjxyz2jc/image/upload/v1723992189/demo1/gjwny8slonmhhgombfti.jpg"
-    ]);
-    //const [imagePath, setImagePath] = useState([])
+    // const [imagePath, setImagePath] = useState(["https://res.cloudinary.com/dyjxyz2jc/image/upload/v1723992188/demo1/cvfhe7rzf6p4r16mpmgl.jpg",
+    //     "https://res.cloudinary.com/dyjxyz2jc/image/upload/v1723992189/demo1/gjwny8slonmhhgombfti.jpg",
+    //     "https://res.cloudinary.com/dyjxyz2jc/image/upload/v1723992189/demo1/gjwny8slonmhhgombfti.jpg"
+    // ]);
+    const [imagePath, setImagePath] = useState([])
     const [title, setTitle] = useState('');
     const [text, setText] = useState('');
     const [categories, setCategories] = useState('66b0d536a97eb67240712c41');
