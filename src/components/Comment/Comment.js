@@ -97,7 +97,7 @@ const Comment = ({creator, show, setShow, data, postId, shortId, setResetC, onPr
                     <Text style={[{ color: 'gray', fontFamily: FONT.primary, fontSize: 12 }, { fontFamily: fontFamily }]}>{reply.user.name}</Text>
                     <Text style={[{ color: 'black', fontFamily: FONT.primary, fontSize: 12 }, { fontFamily: fontFamily }]}>{reply.content}</Text>
                     <View style={{ flexDirection: 'row' }}>
-                      <Text style={[{ color: 'black', fontFamily: FONT.primary }, { fontFamily: fontFamily, flex: 1.5, fontSize: 10 }]}>{DateOfTimePost(item.createdAt)}</Text>
+                      <Text style={[{ color: 'black', fontFamily: FONT.primary }, { fontFamily: fontFamily, flex: 1.5, fontSize: 10 }]}>{DateOfTimePost(reply.createdAt)}</Text>
                       <TouchableOpacity style={{ height: 15, width: 30 }}
                         onPress={() => { repComment(item._id, reply.user.name) }}
                       >

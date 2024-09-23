@@ -2,18 +2,22 @@ import { getToken } from "../../helper/AsyncStorageHelper";
 import AxiosInstance from "../../http/AxiosInstance";
 import axios from 'axios';
 
-export const createNew = async (creator,title, text, categories, images,type,music) => {
+export const createNew = async (creator, title, text, categories, images, type, music) => {
     try {
         const url = '/v1/short/shorts';
         const body = {
-            creator:creator,
-            title:title,
-            text:text,
-            categories:categories,
+            creator: creator,
+            title: title,
+            text: text,
+            categories: categories,
             images: images,
-            type: type,
-            music: music
+            type: type
         }
+        if (music) {
+            body.music = music;  // Chỉ thêm music nếu có giá trị hợp lệ
+        }
+        console.log('Request body: ', body);
+
         return await AxiosInstance().post(url, body);
     } catch (error) {
         console.log(error);

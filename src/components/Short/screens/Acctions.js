@@ -150,7 +150,7 @@ const Acctions = ({ data, isFocused }) => {
           </TouchableOpacity>
 
         }
-        <Text style={{ color: 'white', fontFamily: FONT.primary, fontSize: 18, marginBottom: 15 }}>{formatNumber(data.likes.length)}</Text>
+        <Text style={{ color: 'white', fontFamily: FONT.primary, fontSize: 18, marginBottom: 15 }}>{formatNumber(numLike)}</Text>
         <TouchableOpacity
           onPress={handleSomeAction}
         >

@@ -54,13 +54,13 @@ const PageProfile = (data) => {
   }, []);
   const calculateTotals = (shorts, posts) => {
     if (shorts || posts) {
-      const totalShortReads = shorts?.reduce((total, short) => total + short.reads, 0);
-      const totalShortDislike = shorts?.reduce((total, short) => total + short.unLikes, 0);
-      const totalShortLikes = shorts?.reduce((total, short) => total + short.likes.length, 0);
+      const totalShortReads = shorts?.reduce((total, short) => total + short?.reads, 0);
+      const totalShortDislike = shorts?.reduce((total, short) => total + short?.unLikes, 0);
+      const totalShortLikes = shorts?.reduce((total, short) => total + short?.likes?.length, 0);
 
-      const totalPostReads = posts.reduce((total, post) => total + post.reads, 0);
-      const totalPostDislike = posts.reduce((total, post) => total + post.unLikes, 0);
-      const totalPostLikes = posts.reduce((total, post) => total + post.likes.length, 0);
+      const totalPostReads = posts?.reduce((total, post) => total + post?.reads, 0);
+      const totalPostDislike = posts?.reduce((total, post) => total + post?.unLikes, 0);
+      const totalPostLikes = posts?.reduce((total, post) => total + post?.likes?.length, 0);
       setTotalRead(totalShortReads + totalPostReads);
       setTotalLike(totalShortLikes + totalPostLikes)
       setTotalDislike(totalShortDislike + totalPostDislike)

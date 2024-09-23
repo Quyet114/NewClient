@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Modal, ToastAndroid, ScrollView, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Modal, ToastAndroid, ScrollView, Dimensions, ActivityIndicator } from 'react-native'
 import React, { useState, useCallback, useContext, useRef, useEffect } from 'react'
 import { launchCamera, launchImageLibrary, } from 'react-native-image-picker';
 import { upLoadImage } from '../../news/newsHttp';
@@ -14,6 +14,7 @@ const { height } = Dimensions.get('window');
 const { width } = Dimensions.get('window');
 const AddNewShort = ({ route }) => {
     const videoRef = useRef < VideoRef > (null);
+    const [isLoading, setIsLoading] = useState(false);
     const navigation = useNavigation()
     const [modelVideoVisible, setModelVideoVisible] = useState(false);
     const [modelImageVisible, setModelImageVisible] = useState(false);
@@ -32,7 +33,7 @@ const AddNewShort = ({ route }) => {
     const [text, setText] = useState('');
     const [categories, setCategories] = useState('66b0d536a97eb67240712c41');
     const [type, setType] = useState(0);
-    const [music, setMusic] = useState()
+    const [music, setMusic] = useState('')
     const clear = () => {
         setImagePath();
         setVideoPath();
@@ -46,7 +47,7 @@ const AddNewShort = ({ route }) => {
     const [selectedOption, setSelectedOption] = useState('Worlds');
     const [playingVideo, setPlayingVideo] = useState(null);
     const { user } = useContext(UserContext);
-    const creator = user._id;
+    const creator = user?._id;
     const options = [
         { label: 'Worlds', value: '66b0d536a97eb67240712c41', Icon: 'earth-outline' },
         { label: 'Sport', value: '66b0d536a97eb67240712c42', Icon: 'football-outline' },
@@ -59,8 +60,7 @@ const AddNewShort = ({ route }) => {
     useEffect(() => {
         if (route.params?.music) {
             setMusic(route.params.music);
-            // console.log('heeeee: ', route.params.music);
-
+            //console.log('heeeee: ', route.params.music);
         }
     }, [route.params?.music]);
     const selectOption = (option) => {
@@ -75,11 +75,11 @@ const AddNewShort = ({ route }) => {
     //Tắt mở Modal
     const OpenModalVideo = () => {
         setModelVideoVisible(true);
-        setType(1)
+        setType(0)
     };
     const OpenModalImage = () => {
         setModelImageVisible(true);
-        setType(0)
+        setType(1)
     };
     const togglePlayVideo = (uri) => {
         setPlayingVideo(playingVideo === uri ? null : uri);
@@ -145,6 +145,7 @@ const AddNewShort = ({ route }) => {
                     uri
                 }
             });
+            setIsLoading(true)
             setImage(asset)
             console.log(asset);
             setModelImageVisible(false);
@@ -163,7 +164,7 @@ const AddNewShort = ({ route }) => {
                 );
                 setImagePath(medias)
                 console.log('ảnh nè: 0', medias);
-
+                setIsLoading(false)
             } else {
                 console.error('uploadedMedias is not an array or is undefined');
             }
@@ -178,7 +179,7 @@ const AddNewShort = ({ route }) => {
             const asset = response.assets[0];
             setVideo(asset.uri);
             console.log(asset);
-
+            setIsLoading(true)
             setModelVideoVisible(false);
             const randomNumber = generateRandomNumber(6);
             const formData = new FormData();
@@ -191,7 +192,9 @@ const AddNewShort = ({ route }) => {
             console.log('>>>>>upload image: ', result);
             console.log('>>>>>upload image: ', result[0].url);
             setVideoPath(result[0].url);
-
+            if (result) {
+                setIsLoading(false)
+            }
         }
 
     });
@@ -241,7 +244,7 @@ const AddNewShort = ({ route }) => {
                             </View>
                             <TouchableOpacity style={{
                                 backgroundColor: theme.bgblack(0.2), position: 'absolute', zIndex: 9999, alignItems: 'center',
-                                justifyContent: 'center', height: 31, width: 50, flexDirection: 'row', borderRadius: 2, top: 20, end:10
+                                justifyContent: 'center', height: 31, width: 50, flexDirection: 'row', borderRadius: 2, top: 20, end: 10
                             }}
                                 onPress={() => {
                                     navigation.navigate('Songs')
@@ -317,7 +320,7 @@ const AddNewShort = ({ route }) => {
         }
     }
     const Publish = async () => {
-        console.log('đây: ', 'user: ', creator, 'title: ', title, 'text: ', text, "categories: ", categories, 'video:', videoPath, 'images: ', imagePath, 'type: ', type , 'music', music._id);
+        console.log('đây: ', 'user: ', creator, 'title: ', title, 'text: ', text, "categories: ", categories, 'video:', videoPath, 'images: ', imagePath, 'type: ', type, 'music', music?._id);
         try {
             const body = {
                 creator: creator,
@@ -325,9 +328,10 @@ const AddNewShort = ({ route }) => {
                 text: text,
                 categories: categories,
                 type: type,
-                music: music._id
             };
-
+            if (music && music._id) {
+                body.music = music._id;  // Chỉ thêm music nếu tồn tại
+            }
             // Handle images and video
             if (imagePath && imagePath.length > 0) {
                 body.images = imagePath; // imagePath should be an array of URLs
@@ -335,7 +339,7 @@ const AddNewShort = ({ route }) => {
                 body.images = [videoPath]; // videoPath should be a single URL wrapped in an array
             }
 
-            const result = await createNew(body.creator, body.title, body.text, body.categories, body.images, body.type , body.music);
+            const result = await createNew(body.creator, body.title, body.text, body.categories, body.images, body.type, body.music);
             if (result.status === 1) {
                 ToastAndroid.show('Successfully Published', ToastAndroid.SHORT);
                 clear();
@@ -351,6 +355,9 @@ const AddNewShort = ({ route }) => {
 
     return (
         <View style={{ backgroundColor: '#FFFFFF', height: '100%', width: '100%', alignItems: 'center' }}>
+            {isLoading && (
+                <ActivityIndicator size="large" color="#0000ff" />
+            )}
             <View style={{ flex: 3 }}>
                 <View style={{ height: '100%', width: width }}>
                     {showImageOrVideo()}

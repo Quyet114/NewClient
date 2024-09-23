@@ -48,11 +48,11 @@ const Posts = ({dataLike}) => {
 
               <View style={{ flexDirection: 'row', flex: 1.5, alignItems: 'center' }}>
                 <ICON name='hearto' color={'black'} size={18} />
-                <Text style={{ marginStart: 3, fontSize: 13, fontFamily: FONT.primary }}>{formatNumber(item.likes.length)}</Text>
+                <Text style={{ marginStart: 3, fontSize: 13, fontFamily: FONT.primary }}>{formatNumber(item?.likes?.length)}</Text>
               </View>
               <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <ICON name='eyeo' color={'black'} size={18} style={{ flex: 1 }} />
-                <Text style={{ marginStart: 3, fontSize: 13, flex: 2, fontFamily: FONT.primary }}>{formatNumber(item.reads)}</Text>
+                <Text style={{ marginStart: 3, fontSize: 13, flex: 2, fontFamily: FONT.primary }}>{formatNumber(item?.reads)}</Text>
               </View>
             </View>
           </View>

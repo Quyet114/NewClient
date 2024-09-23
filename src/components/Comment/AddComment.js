@@ -20,12 +20,13 @@ const AddComment = ({ cmtParent, setCmtParent, postId, shortId,setResetC, cmtPar
       shortId: shortId,
       parentCommentId: cmtParent || null
     };
-    if(!user?.user){
+    if(!user?._id){
       Alert.alert('You are guest ', 'Login to send comment') 
+      console.log(user.user);
     }else if(text.length <=0) {
       Alert.alert('Empty content', 'Type something to send comment')
     }else{
-           try {
+        try {
         console.log('text: ', text, 'creator: ', creator, 'postId: ', postId, 'parent: ', cmtParent);
         const response = await sendComment(commentData);
         clear()

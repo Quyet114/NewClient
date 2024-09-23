@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Dimensions, Image, TouchableOpacity, FlatList, 
 import React, { useState, useContext, useEffect, useCallback } from 'react'
 import { UserContext } from '../UserContext';
 import { getMyRead, getMylike, getPostsByUser, getPostsTodayByUser } from '../../news/newsHttp';
-import { getFollowersByStatus } from '../UserHttp';
+import { getFollowersByStatus, getPostAndShort } from '../UserHttp';
 import { deleteNew } from '../../news/newsHttp';
 import { getUserById } from '../UserHttp';
 import Login from './Login';
@@ -59,6 +59,8 @@ const Profile = (props) => {
   const [totalLike, setTotalLike] = useState(0);
   const [totalRead, setTotalRead] = useState(0);
   const [totalDislike, setTotalDislike] = useState(0);
+  const [shorts, setShorts] = useState([]);
+
   useEffect(() => {
     // Cập nhật font khi FONT.primary thay đổi
     setFontFamily(FONT.primary);
@@ -102,177 +104,182 @@ const Profile = (props) => {
   const fetchMyLike = async () => {
     try {
       if (user?.authenticated === false) {
-
         const result = await getMylike(user._id)
         setLikeNew(result)
         //console.log('fetchMyLike: ', result);
       } else {
-        const result = await getPostsTodayByUser(user._id)
-        setLikeNew(result.posts)
-        //console.log('setLikeNew',result);
+        // const result = await getPostsTodayByUser(user._id)
+        // if (result?.posts?.length > 0) {
+        //   setLikeNew(result)
+        //   console.log('setLikeNew', result);
+        // }
 
-      }
+        const result = await getPostAndShort(user._id);
+        if (result.status === 1) {
+          setShorts(result.shorts);
+        }
+    }
 
     } catch (error) {
-      console.log('fetchMyLike error: ', error);
-    }
-
-  }
-  const fetchMyFollow = async () => {
-    const status = (user.authenticated ? 1 : 2)
-    //console.log('fetchMyFollow', status, user._id);
-
-    try {
-      const result = await getFollowersByStatus(user._id, status)
-      setFollow(result)
-      //console.log('fetchMyFollow: ', result);
-    } catch (error) {
-      //console.log('fetchMyFollow error: ', error);
-    }
-
-  }
-  const calculateTotals = (readNew, likeNew) => {
-    const totalShortReads = readNew.reduce((total, readNew) => total + readNew?.reads, 0);
-    const totalShortDislike = readNew.reduce((total, readNew) => total + readNew?.unLikes, 0);
-    const totalShortLikes = readNew.reduce((total, readNew) => total + readNew?.likes?.length, 0);
-
-    const totalPostReads = likeNew.reduce((total, likeNew) => total + likeNew?.reads, 0);
-    const totalPostDislike = likeNew.reduce((total, likeNew) => total + likeNew?.unLikes, 0);
-    const totalPostLikes = likeNew.reduce((total, likeNew) => total + likeNew?.likes?.length, 0);
-    setTotalRead(totalShortReads + totalPostReads);
-    setTotalLike(totalShortLikes + totalPostLikes)
-    setTotalDislike(totalShortDislike + totalPostDislike)
-  };
-  useEffect(
-    () => {
-      calculateTotals(readNew, likeNew)
-    }, [readNew, likeNew]
-  )
-  const OpenModal = () => {
-    setModelVisible(true);
-  };
-  const deleteN = async (_id) => {
-    try {
-      const response = await deleteNew(_id);
-      ToastAndroid.show('Successfuly', ToastAndroid.SHORT)
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  if (!user) {
-    return (<View style={{ flex: 1 }}>
-      <Login />
-    </View>)
-  }
-  const handleScroll = (event) => {
-    const offsetY = event.nativeEvent.contentOffset.y;
-    if (offsetY === 0) {
-      // Nếu người dùng scroll lên đầu trang
-      // Thực hiện hàm load lại dữ liệu
-      reloadUserData();
-    }
-  };
-  const pageChange = ({ page, likeNew, readNew }) => {
-    if (page == LIKE) {
-      return (<LikeToday dataLike={likeNew} />)
-    } else if (page == READ) {
-      return (<ReadNAll dataRead={readNew} />)
-    } else {
-      return (<FollowNFollower dataFollow={follow} />)
-    }
+    console.log('fetchMyLike error: ', error);
   }
 
-  return (
-    <View style={{ flex: 1, backgroundColor: '#FFFFF0' }}>
-      <View
-        showsVerticalScrollIndicator={false} // Ẩn thanh cuộn dọc
-        showsHorizontalScrollIndicator={false} // Ẩn thanh cuộn ngang
-      >
-        <View style={styles.contianer}>
-          <View style={styles.profile}>
-            <View>
-              <View style={{ justifyContent: 'center', alignItems: 'center', height: 100, marginTop: 15 }}>
-                <TouchableOpacity onPress={() => {
-                  navigation.navigate('Setting')
-                }}
-                  style={{}}>
-                  <View style={{ flexDirection: 'row', height: 100, alignItems: 'center', width: '100%', marginStart: 5 }}>
-                    <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                      <Image source={{ uri: user.avatar }} style={{ height: 80, width: 80, borderRadius: 240, backgroundColor: 'gray', flex: 1, marginEnd: 20 }} />
-                      {/* trạng thái user */}
-                      <View style={{ height: 25, width: 100, backgroundColor: COLOR.T, borderRadius: 3, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
-                        {user.authenticated ?
-                          <Text style={[{ fontFamily: FONT.primary, fontSize: 16, color: 'black' }, { fontFamily: fontFamily }]}>business account</Text>
-                          :
-                          <Text style={[{ fontFamily: FONT.primary, fontSize: 16, color: 'black' }, { fontFamily: fontFamily }]}>private account</Text>
-                        }
-                      </View>
-                    </View>
+}
+const fetchMyFollow = async () => {
+  const status = (user.authenticated ? 1 : 2)
+  //console.log('fetchMyFollow', status, user._id);
 
-                    <View style={{ justifyContent: 'space-around', flexDirection: 'column', height: 100, flex: 2, alignItems: 'flex-start', backgroundColor: '#FFFAF0', padding: 8, borderRadius: 5 }}>
-                      <View style={{ alignItems: 'center' }}>
-                        <Text style={[styles.text, { fontFamily: fontFamily }]}>{user.name}</Text>
-                      </View>
-                      <View style={{ alignItems: 'center' }}>
-                        <Text style={[styles.textE, { fontFamily: fontFamily }]}>{user.email}</Text>
-                      </View>
+  try {
+    const result = await getFollowersByStatus(user._id, status)
+    setFollow(result)
+    //console.log('fetchMyFollow: ', result);
+  } catch (error) {
+    //console.log('fetchMyFollow error: ', error);
+  }
+
+}
+const calculateTotals = (readNew, likeNew) => {
+  const totalShortReads = readNew?.reduce((total, readNew) => total + readNew?.reads, 0);
+  const totalShortDislike = readNew?.reduce((total, readNew) => total + readNew?.unLikes, 0);
+  const totalShortLikes = readNew?.reduce((total, readNew) => total + readNew?.likes?.length, 0);
+
+  const totalPostReads = likeNew?.reduce((total, likeNew) => total + likeNew?.reads, 0);
+  const totalPostDislike = likeNew?.reduce((total, likeNew) => total + likeNew?.unLikes, 0);
+  const totalPostLikes = likeNew?.reduce((total, likeNew) => total + likeNew?.likes?.length, 0);
+  setTotalRead(totalShortReads + totalPostReads);
+  setTotalLike(totalShortLikes + totalPostLikes)
+  setTotalDislike(totalShortDislike + totalPostDislike)
+};
+useEffect(
+  () => {
+    calculateTotals(readNew, likeNew)
+  }, [readNew, likeNew]
+)
+const OpenModal = () => {
+  setModelVisible(true);
+};
+const deleteN = async (_id) => {
+  try {
+    const response = await deleteNew(_id);
+    ToastAndroid.show('Successfuly', ToastAndroid.SHORT)
+  } catch (error) {
+    console.log(error);
+  }
+}
+if (!user) {
+  return (<View style={{ flex: 1 }}>
+    <Login />
+  </View>)
+}
+const handleScroll = (event) => {
+  const offsetY = event.nativeEvent.contentOffset.y;
+  if (offsetY === 0) {
+    // Nếu người dùng scroll lên đầu trang
+    // Thực hiện hàm load lại dữ liệu
+    reloadUserData();
+  }
+};
+const pageChange = ({ page, likeNew, readNew }) => {
+  if (page == LIKE) {
+    return (<LikeToday dataLike={likeNew} shorts={shorts}/>)
+  } else if (page == READ) {
+    return (<ReadNAll dataRead={readNew} />)
+  } else {
+    return (<FollowNFollower dataFollow={follow} />)
+  }
+}
+
+return (
+  <View style={{ flex: 1, backgroundColor: '#FFFFF0' }}>
+    <View
+      showsVerticalScrollIndicator={false} // Ẩn thanh cuộn dọc
+      showsHorizontalScrollIndicator={false} // Ẩn thanh cuộn ngang
+    >
+      <View style={styles.contianer}>
+        <View style={styles.profile}>
+          <View>
+            <View style={{ justifyContent: 'center', alignItems: 'center', height: 100, marginTop: 15 }}>
+              <TouchableOpacity onPress={() => {
+                navigation.navigate('Setting')
+              }}
+                style={{}}>
+                <View style={{ flexDirection: 'row', height: 100, alignItems: 'center', width: '100%', marginStart: 5 }}>
+                  <View style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                    <Image source={{ uri: user.avatar }} style={{ height: 80, width: 80, borderRadius: 240, backgroundColor: 'gray', flex: 1, marginEnd: 20 }} />
+                    {/* trạng thái user */}
+                    <View style={{ height: 25, width: 100, backgroundColor: COLOR.T, borderRadius: 3, marginTop: 10, alignItems: 'center', justifyContent: 'center' }}>
                       {user.authenticated ?
-                        <>
-                          <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginTop: 10 }}>
-                            <Text style={[{ fontFamily: FONT.primary, color: 'black', fontSize: 16 }, { fontFamily: fontFamily }]}>Follower </Text>
-                            <Text style={[{ fontFamily: FONT.primary, color: 'black', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(follow?.length)}</Text>
-                          </View>
-                          <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
-                            <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center' }}>
-                              <ICON name='like2' size={20} color={'black'} />
-                              <Text style={[{ fontFamily: FONT.primary, color: 'gray', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(totalLike)}</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginStart: 10 }}>
-                              <ICON name='dislike2' size={20} color={'black'} />
-                              <Text style={[{ fontFamily: FONT.primary, color: 'gray', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(totalDislike)}</Text>
-                            </View>
-                            <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginStart: 10 }}>
-                              <ICON name='eyeo' size={20} color={'black'} />
-                              <Text style={[{ fontFamily: FONT.primary, color: 'gray', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(totalRead)}</Text>
-                            </View>
-                          </View>
-                        </>
-                        : <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 5 }} />}
+                        <Text style={[{ fontFamily: FONT.primary, fontSize: 16, color: 'black' }, { fontFamily: fontFamily }]}>business account</Text>
+                        :
+                        <Text style={[{ fontFamily: FONT.primary, fontSize: 16, color: 'black' }, { fontFamily: fontFamily }]}>private account</Text>
+                      }
                     </View>
-                    <ICON name='setting' size={22} color={'black'} style={{ position: 'absolute', end: 5, top: 0 }} />
                   </View>
-                </TouchableOpacity>
 
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: windowWith - 10, height: 5, borderBottomWidth: 1, borderBottomColor: 'black', marginTop: 25 }}>
-              </View>
+                  <View style={{ justifyContent: 'space-around', flexDirection: 'column', height: 100, flex: 2, alignItems: 'flex-start', backgroundColor: '#FFFAF0', padding: 8, borderRadius: 5 }}>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={[styles.text, { fontFamily: fontFamily }]}>{user.name}</Text>
+                    </View>
+                    <View style={{ alignItems: 'center' }}>
+                      <Text style={[styles.textE, { fontFamily: fontFamily }]}>{user.email}</Text>
+                    </View>
+                    {user.authenticated ?
+                      <>
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginTop: 10 }}>
+                          <Text style={[{ fontFamily: FONT.primary, color: 'black', fontSize: 16 }, { fontFamily: fontFamily }]}>Follower </Text>
+                          <Text style={[{ fontFamily: FONT.primary, color: 'black', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(follow?.length)}</Text>
+                        </View>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 5 }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center' }}>
+                            <ICON name='like2' size={20} color={'black'} />
+                            <Text style={[{ fontFamily: FONT.primary, color: 'gray', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(totalLike)}</Text>
+                          </View>
+                          <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginStart: 10 }}>
+                            <ICON name='dislike2' size={20} color={'black'} />
+                            <Text style={[{ fontFamily: FONT.primary, color: 'gray', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(totalDislike)}</Text>
+                          </View>
+                          <View style={{ flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'center', marginStart: 10 }}>
+                            <ICON name='eyeo' size={20} color={'black'} />
+                            <Text style={[{ fontFamily: FONT.primary, color: 'gray', fontSize: 14, marginStart: 5 }, { fontFamily: fontFamily }]}>{formatNumber(totalRead)}</Text>
+                          </View>
+                        </View>
+                      </>
+                      : <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 5 }} />}
+                  </View>
+                  <ICON name='setting' size={22} color={'black'} style={{ position: 'absolute', end: 5, top: 0 }} />
+                </View>
+              </TouchableOpacity>
 
             </View>
-          </View>
-          <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-            <NewRecentComponent page={page} setPage={setPage} user={user} fontFamily={fontFamily} />
-          </View>
-          <View style={{ width: '100%', height: '100%' }}>
-            {pageChange({ page, likeNew, readNew })}
-          </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', width: windowWith - 10, height: 5, borderBottomWidth: 1, borderBottomColor: 'black', marginTop: 25 }}>
+            </View>
 
+          </View>
+        </View>
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <NewRecentComponent page={page} setPage={setPage} user={user} fontFamily={fontFamily} />
+        </View>
+        <View style={{ width: '100%', height: '100%' }}>
+          {pageChange({ page, likeNew, readNew })}
         </View>
 
       </View>
-      {user.authenticated ?
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate('AddNew')
-          }}
-          style={{ position: 'absolute', height: 50, width: 50, borderRadius: 50, backgroundColor: 'white', right: 24, bottom: 24, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'black' }}>
-          <Text style={{ color: 'black', fontWeight: '600', fontSize: 24 }}>+</Text>
-        </TouchableOpacity>
-        :
-        null
-      }
 
     </View>
-  )
+    {user.authenticated ?
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('AddNew')
+        }}
+        style={{ position: 'absolute', height: 50, width: 50, borderRadius: 50, backgroundColor: 'white', right: 24, bottom: 24, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: 'black' }}>
+        <Text style={{ color: 'black', fontWeight: '600', fontSize: 24 }}>+</Text>
+      </TouchableOpacity>
+      :
+      null
+    }
+
+  </View>
+)
 }
 const NewRecentComponent = ({ user, page, setPage, fontFamily }) => {
   return (
@@ -281,7 +288,7 @@ const NewRecentComponent = ({ user, page, setPage, fontFamily }) => {
         onPress={() => { setPage(LIKE) }}
         disabled={page === LIKE ? true : false}
       >
-        {user.authenticated ? <Text style={[styles.text, { fontFamily: fontFamily }]}>Today</Text> : <Text style={[styles.text, { fontFamily: fontFamily }]}>Like</Text>}
+        {user.authenticated ? <Text style={[styles.text, { fontFamily: fontFamily }]}>Shorts</Text> : <Text style={[styles.text, { fontFamily: fontFamily }]}>Like</Text>}
         {page === LIKE ?
           <>
             <View style={{ position: 'absolute', top: 25, height: 3, width: '100%', backgroundColor: 'black' }}></View>
@@ -293,7 +300,7 @@ const NewRecentComponent = ({ user, page, setPage, fontFamily }) => {
         disabled={page === READ ? true : false}
 
       >
-        {user.authenticated ? <Text style={[styles.text, { fontFamily: fontFamily }]}>All</Text> : <Text style={[styles.text, { fontFamily: fontFamily }]}>Read</Text>}
+        {user.authenticated ? <Text style={[styles.text, { fontFamily: fontFamily }]}>Posts</Text> : <Text style={[styles.text, { fontFamily: fontFamily }]}>Read</Text>}
 
         {page === READ ? <View style={{ position: 'absolute', bottom: 0, height: 3, width: '100%', backgroundColor: 'black' }}></View> : null}
       </TouchableOpacity>

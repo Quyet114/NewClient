@@ -5,8 +5,8 @@ import ICON from 'react-native-vector-icons/AntDesign';
 import { useNavigation } from '@react-navigation/native';
 import { COLOR, FONT, DateOfTimePost, formatNumber } from '../../../constain/fontFamilies';
 import { UserContext } from '../UserContext';
-
-const LikeToday = ({ dataLike }) => {
+import ListShort from './Shorts'
+const LikeToday = ({ dataLike , shorts}) => {
   const dataL = dataLike;
   const navigation = useNavigation();
   const user = useContext(UserContext)
@@ -76,12 +76,18 @@ const LikeToday = ({ dataLike }) => {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.body}>
-        <FlatList
-          data={dataL}
-          renderItem={ItemToday}
-          keyExtractor={(item) => item._id}
-          showsVerticalScrollIndicator={false}
-        />
+        {user.user.authenticated == true ?
+          <ListShort dataShort={shorts}  />
+          :
+
+          <FlatList
+            data={dataL}
+            renderItem={ItemToday}
+            keyExtractor={(item) => item._id}
+            showsVerticalScrollIndicator={false}
+          />
+        }
+
       </View>
 
     </View>
