@@ -147,7 +147,7 @@ const calculateTotals = (readNew, likeNew) => {
   const totalPostDislike = likeNew?.reduce((total, likeNew) => total + likeNew?.unLikes, 0);
   const totalPostLikes = likeNew?.reduce((total, likeNew) => total + likeNew?.likes?.length, 0);
   setTotalRead(totalShortReads + totalPostReads);
-  setTotalLike(totalShortLikes + totalPostLikes)
+  setTotalLike((totalShortLikes || 0) + (totalPostLikes || 0));
   setTotalDislike(totalShortDislike + totalPostDislike)
 };
 useEffect(

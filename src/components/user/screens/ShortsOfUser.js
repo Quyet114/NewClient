@@ -49,7 +49,9 @@ const ShortsOfUser = ({ route }) => {
           </View>
         }
         <Header data={item} />
-        <Acctions data={item} />
+        <Acctions data={item} 
+        isFocused={index === currentIndex}
+        />
         <Tittle data={item} />
       </View>
     );

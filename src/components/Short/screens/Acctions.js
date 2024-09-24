@@ -32,7 +32,7 @@ const Acctions = ({ data, isFocused }) => {
       setCheckFollow(isFollowed);
     }
 
-  }, [data]);
+  }, [isFocused]);
   const like = async () => {
     if (user?.user) {
       const result = await updateLikes(data._id, user.user._id)
@@ -57,16 +57,15 @@ const Acctions = ({ data, isFocused }) => {
     }
   }
   useEffect(() => {
-    if(user?.watchHistory){
+    if (user?.user?.watchHistory && isFocused) {
       for (const watchHistory of user?.user?.watchHistory) {
-        if (watchHistory === data._id) {
+        if (watchHistory == data._id) {
           setCheckLike(true);
           break; // Dừng vòng lặp khi tìm thấy
         }
       }
     }
-
-  }, []);
+  }, [isFocused]);
 
   const handleSomeAction = () => {
     if (isFocused) {
@@ -109,9 +108,13 @@ const Acctions = ({ data, isFocused }) => {
           }
         });
         setCurrentSound(sound);
+        // Lặp lại âm thanh
+        sound.setNumberOfLoops(-1);
       } else {
+        sound.setNumberOfLoops(0);
         sound.stop(() => {
           console.log('Âm thanh đã dừng lại do mất focus');
+
         });
         sound.release();
       }

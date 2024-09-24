@@ -77,6 +77,8 @@ const PageProfile = (data) => {
       const result = await getPostAndShort(id);
       if (result.status === 1) {
         setShorts(result.shorts);
+        console.log('e',result.shorts);
+        
         setPosts(result.posts);
       }
     } catch (error) {

@@ -59,7 +59,6 @@ const FollowNFollower = ({ dataFollow }) => {
   }
   return (
     <View style={styles.container}
-      showsVerticalScrollIndicator={false}
     >
       <View style={styles.body}>
         <FlatList
@@ -79,7 +78,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    marginBottom: 0
+    marginBottom: 100
   },
   header: {
     marginVertical: 8,
@@ -88,7 +87,8 @@ const styles = StyleSheet.create({
     height: '100%',
     width: '100%',
     flexDirection: 'row',
-    paddingTop: 20
+    paddingTop: 20,
+    paddingBottom:100
   },
   headerPage: {
     marginEnd: 5,

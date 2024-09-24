@@ -10,7 +10,7 @@ const ReadNAll = ({ dataRead }) => {
   const ItemToday = ({ item }) => {
     return (
       <TouchableOpacity style={[{
-        height: 145, width: '100%', flexDirection: 'column', marginBottom: 10, shadowColor: '#000',
+        height: 148, width: '100%', flexDirection: 'column', marginBottom: 10, shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,

@@ -156,7 +156,7 @@ const AddNewShort = ({ route }) => {
                     type: data.type,
                     name: `photo-${index}-${data.fileName}` || `photo-${index}.jpg`,
                 });
-            });
+            });     
             const result = await upLoadImage(formData);
             if (result) {
                 const medias = result.map(item =>

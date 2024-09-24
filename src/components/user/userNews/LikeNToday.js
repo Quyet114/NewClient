@@ -18,7 +18,7 @@ const LikeToday = ({ dataLike , shorts}) => {
   const ItemToday = ({ item }) => {
     return (
       <TouchableOpacity style={[{
-        height: 140, width: '100%', flexDirection: 'column', marginBottom: 10, shadowColor: '#000',
+        height: 148, width: '100%', flexDirection: 'column', marginBottom: 10, shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.3,
         shadowRadius: 4,
@@ -33,7 +33,7 @@ const LikeToday = ({ dataLike , shorts}) => {
           <View style={styles.headerContent}>
             <Text style={{ position: 'absolute', color: 'black', fontFamily: FONT.primary, height: 40, width: 80, top: -20 }}>{item.categories[0].name}</Text>
             <Text style={{ color: COLOR.D, fontSize: 15, marginBottom: 4, fontFamily: FONT.primary, textAlign: 'justify' }} numberOfLines={1} ellipsizeMode="tail" >{item.title}</Text>
-            <Text style={{ color: COLOR.D, fontSize: 14, fontFamily: FONT.primary, textAlign: 'justify' }} numberOfLines={5} ellipsizeMode="tail">
+            <Text style={{ color: COLOR.D, fontSize: 13, fontFamily: FONT.primary, textAlign: 'justify' }} numberOfLines={5} ellipsizeMode="tail">
               {item.text}
             </Text>
             <View style={styles.headerPage}>
