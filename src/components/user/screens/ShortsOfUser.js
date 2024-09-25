@@ -10,7 +10,7 @@ import { getTenShorts } from '../../Short/ShortHttp'
 import ShowImages from '../../Short/screens/ShowImages';
 import ShowVideo from '../../Short/screens/ShowVideo';
 import { UserContext } from '../UserContext';
-
+import { useFocusEffect } from '@react-navigation/native';
 const { height } = Dimensions.get('window');
 const { width } = Dimensions.get('window');
 const ShortsOfUser = ({ route }) => {
@@ -18,46 +18,53 @@ const ShortsOfUser = ({ route }) => {
   const { index, dataShort } = route.params;
   const [currentIndex, setCurrentIndex] = useState(index);
   const user = useContext(UserContext);
-  const {reloadUserData}  = useContext(UserContext);
+  const { reloadUserData } = useContext(UserContext);
+  console.log('ShortsOfUser index:', index);
   const handleChangeIndex = useCallback(({ index }) => {
     console.log('Current index:', index);
     setCurrentIndex(index);
   }, []);
-  console.log('Current index:', index);
   useEffect(() => {
-      const fetchUser = async () => {
-        await reloadUserData(user.user._id);
-      }
-      fetchUser()
-    }, [currentIndex])
-  const RenderItem = memo(({ item, index }) => {
+    const fetchUser = async () => {
+      await reloadUserData(user.user._id);
+    }
+    fetchUser()
+  }, [currentIndex])
+  useFocusEffect(
+    useCallback(() => {
+      return () => {
+        setCurrentIndex(-10);
+        console.log('index -1');
+        renderItem
+      };
+    }, [])
+  );
+  const renderItem = useCallback(({ item, index }) => {
+    const isFocused = index === currentIndex;
     return (
       <View style={styles.videoContainer}>
         {item.type === 0 ?
           <View style={{ height: '100%', width: '100%' }}>
             <ShowVideo
               data={item}
-              isFocused={index === currentIndex}
+              isFocused={isFocused}
             />
           </View>
           :
           <View style={{ height: '100%', width: '100%' }}>
             <ShowImages
               data={item}
-              isFocused={index === currentIndex}
+              isFocused={isFocused}
             />
           </View>
         }
         <Header data={item} />
-        <Acctions data={item} 
-        isFocused={index === currentIndex}
+        <Acctions data={item}
+          isFocused={isFocused}
         />
         <Tittle data={item} />
       </View>
     );
-  });
-  const renderItem = useCallback(({ item, index }) => {
-    return <RenderItem item={item} index={index} />;
   }, [currentIndex]);
 
   return (
@@ -69,9 +76,8 @@ const ShortsOfUser = ({ route }) => {
         keyExtractor={item => item._id}
         showPagination={false}
         onChangeIndex={handleChangeIndex}
-        initialIndex={index} 
+        initialIndex={index}
         index={index}
-
       />
     </View>
   )

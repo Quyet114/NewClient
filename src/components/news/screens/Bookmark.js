@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import React, { useState, useEffect, useCallback } from 'react'
 import { searchNews } from '../newsHttp';
-import { FONT, COLOR, formatNumber, DateOfTimePost } from '../../../constain/fontFamilies';
+import { FONT, COLOR, formatNumber, DateOfTimePost ,getDateAndDay} from '../../../constain/fontFamilies';
 import ICON from 'react-native-vector-icons/AntDesign'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { debounce } from 'lodash';
@@ -89,8 +89,8 @@ const Bookmark = (props) => {
             </Text>
             <View style={styles.headerPage}>
               <Image source={{ uri: item.creator?.avatar }} style={[{ height: 25, width: 25, borderRadius: 3, borderWidth: 1, borderRadius: 30, borderColor: 'gray', marginStart: 5 }]} />
-              <Text style={{ flex: 2, fontSize: 12, fontFamily: FONT.primary, fontWeight: "500", marginStart: 10 }}>{item.creator.name}</Text>
-              <Text style={{ flex: 3, fontSize: 12, fontFamily: FONT.primary, fontWeight: "500", position: 'absolute', end: 5, top: 7 }}>{DateOfTimePost(item.createdAt)}</Text>
+              <Text style={{ flex: 2, fontSize: 10, fontFamily: FONT.primary, fontWeight: "500", marginStart: 2 }}>{item.creator.name}</Text>
+              <Text style={{ flex: 3, fontSize: 10, fontFamily: FONT.primary, fontWeight: "500", position: 'absolute', end: 5, top: 7 }}>{getDateAndDay(item.createdAt)}</Text>
             </View>
           </View>
           <View style={{ flexDirection: 'column', height: '20%', marginTop: 5 }}>
@@ -102,8 +102,8 @@ const Bookmark = (props) => {
             <View style={{ height: 20, width: 140, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 5 }}>
 
               <View style={{ flexDirection: 'row', flex: 1.5, alignItems: 'center' }}>
-                <ICON name='heart' color={'red'} size={18} />
-                <Text style={{ marginStart: 3, fontSize: 13, fontFamily: FONT.primary }}>{formatNumber(item.likes.length)}</Text>
+                <ICON name='hearto' color={'black'} size={18} />
+                <Text style={{ marginStart: 3, fontSize: 13, fontFamily: FONT.primary }}>{formatNumber(item?.likes?.length)}</Text>
               </View>
               <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <ICON name='eyeo' color={'black'} size={18} style={{ flex: 1 }} />

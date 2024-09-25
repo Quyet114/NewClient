@@ -230,7 +230,7 @@ const NewDetail = () => {
       >
         <View style={styles.body}>
           <View style={styles.title}>
-            <Text style={{ fontFamily: FONT.primary, fontSize: 16, color: 'black', textAlign: 'justify', width: windowWith - 20 }}>{data.title}</Text>
+            <Text style={{ fontFamily: FONT.primary, fontSize: 16, color: 'black', textAlign: 'justify', width: windowWith - 20,  }} numberOfLines={3}>{data.title}</Text>
           </View>
           <Image source={{ uri: data.images[0] }} style={{ height: 250, width: '100%', borderRadius: 2, marginBottom: 10 }} />
           <Text style={{ fontFamily: FONT.primary, fontSize: 18, color: 'black', textAlign: 'justify' }} >{data.text}</Text>
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFF0',
   },
   title: {
-    height: 50,
+    height: 57,
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 12,

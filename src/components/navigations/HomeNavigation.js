@@ -118,7 +118,7 @@ const HomeNavigation = () => {
                 <Stack.Screen name="DetailScreen" component={DetailScreen} />
                 <Stack.Screen name="Short" component={Shorts}/>
                 <Stack.Screen name="Profile" component={ProfileStack} />
-                <Stack.Screen name="AddNew" component={AddNew} options={{ headerShown: true, headerTitleStyle:{fontFamily:FONT.primary, fontSize:22} }} />
+                <Stack.Screen name="AddNew" component={AddNew} options={{ headerShown: true, title:'Create news', headerTitleStyle:{fontFamily:FONT.primary, fontSize:22} }} />
                 <Stack.Screen name="EditProfile" component={EditProfile} />
                 <Stack.Screen name="Setting" component={Setting} />
                 <Stack.Screen name="Register" component={Register} />

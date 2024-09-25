@@ -16,6 +16,8 @@ const Acctions = ({ data, isFocused }) => {
   const [numLike, setNumLike] = useState(data.likes.length)
   const [numRead, setNumRead] = useState(data.reads)
   const followersWithStatus2 = user?.user?.follower;
+
+  
   //cmt
   const [resetC, setResetC] = useState(false)
   const [show, setShow] = useState(false);
@@ -31,7 +33,7 @@ const Acctions = ({ data, isFocused }) => {
       );
       setCheckFollow(isFollowed);
     }
-
+    console.log('Acctions', isFocused);
   }, [isFocused]);
   const like = async () => {
     if (user?.user) {
